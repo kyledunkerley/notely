@@ -5,7 +5,7 @@ namespace Acrux;
 public sealed partial class MainWindow
 {
     string lastCapture="";
-    void ShowCapture()
+    void ShowColumnCapture()
     {
         if(!TrySave())return;var board=ActivityColumns("capture",new[]{"capture","a quick thought","recent captures"},new[]{.7,1.65,1.0});var types=board.Columns[0];var entry=board.Columns[1];var recent=board.Columns[2];
         types.Children.Add(Label("Save now. Find its place later.",15,.6));var labels=new[]{"quick idea","link","web clipping"};var hints=new[]{"A thought, without the filing.","Keep an address and your context.","Keep a pasted excerpt and its source."};

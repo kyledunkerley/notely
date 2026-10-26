@@ -40,14 +40,15 @@ public sealed partial class MainWindow
     }
     Button ConceptPivot(string text, Action action, Border indicator)
     {
-        var stack = new StackPanel { Spacing = 9 }; var heading = Label(text, 52); heading.FontWeight = Microsoft.UI.Text.FontWeights.Light; stack.Children.Add(heading); indicator.Height = 3; indicator.Background = palette.Ink; stack.Children.Add(indicator);
+        var stack = new StackPanel { Spacing = 9 }; var heading = Label(text, 52); heading.FontWeight = Microsoft.UI.Text.FontWeights.Light; stack.Children.Add(heading); indicator.Height = 0; indicator.Background = palette.Ink; stack.Children.Add(indicator);
         var button = Action("", action); button.Padding = new Thickness(0); button.Content = stack; return button;
     }
     void SelectTopView(string view)
     {
         var changed = topView != view; topView = view;
         var allPivots = new[] { ("capture", homePivotLine), ("write", writePivotLine), ("connect", connectPivotLine), ("review", reviewPivotLine) };
-        foreach (var (name, line) in allPivots) { line.Opacity = name == view ? 1 : 0; if (line.Parent is StackPanel p && p.Children[0] is TextBlock text) { text.Opacity = name == view ? 1 : .45; if(changed && name == view) Sweep(text); text.FontWeight = name == view ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Light; } }
+        foreach (var (name, line) in allPivots) { line.Opacity = 0; if (line.Parent is StackPanel p && p.Children[0] is TextBlock text) { text.Opacity = name == view ? 1 : .45; if(changed && name == view) Sweep(text); text.FontWeight = name == view ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Light; } }
+        AdaptFocusHeader(root.ActualWidth>0?root.ActualWidth:1608);
         if (overlayView != null) overlayView.Visibility = Visibility.Collapsed;
     }
     void BuildConceptWorkspace()

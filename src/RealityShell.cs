@@ -53,7 +53,7 @@ public sealed partial class MainWindow
     Task ShowColumnDetails()
     {
         if(current==null)return Task.CompletedTask;
-        if(root.ActualWidth>=1500){detailsOpen=!detailsOpen;ApplyResponsiveLayout(root.ActualWidth);return Task.CompletedTask;}
+
         var board=ActivityColumns("write",new[]{"details","references","links"},new[]{1.0,1.0,1.0});
         board.Columns[0].Children.Add(Label(current.Name,26));board.Columns[0].Children.Add(Label(current.Group,14,.6));board.Columns[0].Children.Add(Eyebrow("TAGS"));
         foreach(var tag in NoteMeta.Tags(draft)){var value=tag;board.Columns[0].Children.Add(Action(tag+"  ×",()=>{var tags=NoteMeta.Tags(draft);tags.Remove(value);CommitMetadata(NoteMeta.Set(draft,"tags",tags));_ = ShowColumnDetails();}));}

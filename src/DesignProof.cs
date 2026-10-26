@@ -13,6 +13,7 @@ public sealed partial class MainWindow
             File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "proof-trace.txt"), "Entered proof renderer. Root " + root.ActualWidth + "x" + root.ActualHeight);
             if (!root.IsLoaded) { var loaded = new TaskCompletionSource(); root.Loaded += (_, _) => loaded.TrySetResult(); await loaded.Task.WaitAsync(TimeSpan.FromSeconds(10)); }
             current = null; dirty = false; notebooks.Clear(); SeedConceptNotebooks(); LoadVault(); ShowWriting(); await Task.Delay(700); await ExportVisual("concept-write.png");
+            if(writingTools!=null)RevealCommands(writingTools,true);if(modernCommands!=null)RevealCommands(modernCommands,true);await Task.Delay(220);await ExportVisual("concept-write-controls.png");if(writingTools!=null)RevealCommands(writingTools,false);if(modernCommands!=null)RevealCommands(modernCommands,false);
             ShowCapture(); await Task.Delay(250); await ExportVisual("concept-capture.png");
             ShowNotebooks(); await Task.Delay(250); await ExportVisual("concept-notebooks.png");
             ShowConnections(); await Task.Delay(250); await ExportVisual("concept-connect.png");

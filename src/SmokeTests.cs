@@ -12,6 +12,8 @@ public sealed partial class MainWindow
         {
             await Task.Delay(250);
             Check(smokeMode, "Tests use an isolated notebook");
+            Check(notebookHome?.Visibility==Visibility.Visible,"Startup opens all notebook live tiles");
+            Check(PointerNear(110,80,150,90,200,40)&&!PointerNear(10,400,150,90,200,40),"Command proximity includes approach area and excludes distant pointer");
             foreach (var text in new[] { "", "paragraph", "one\n", "one\n\ntwo", "one\n\n\ntwo", "```cs\nvar a = 1;\n\nvar b = 2;\n```\n\nAfter", "# Heading\n\n> Quote\n> next line\n\n- [ ] Task\n" })
                 Check(MarkdownBlocks.Join(MarkdownBlocks.Split(text)) == text, "Markdown round trip: " + results.Count);
             var continuous = new LiveMarkdownEditor("first\n\n## Heading\n\nlast"); continuous.SelectRange(0,22); Check(continuous.SelectedText.Contains("Heading") && continuous.SelectedText.Contains("first"), "Native selection crosses paragraphs and headings");
@@ -19,7 +21,7 @@ public sealed partial class MainWindow
             var capturedPath=StoreCapture("Captured fixture","A quick idea","https://example.com","Inbox"); Check(File.Exists(capturedPath)&&File.ReadAllText(capturedPath).Contains("[Source](https://example.com)"),"Capture saves source and content as local Markdown");
             var duplicateCapture=StoreCapture("Captured fixture","Another idea","","Inbox");Check(duplicateCapture!=capturedPath,"Capture never overwrites a same-name note");
             ShowCapture();Check(topView=="capture"&&overlayView?.Visibility==Visibility.Visible,"Capture has its own navigable workspace");ShowWriting();
-            ApplyResponsiveLayout(400);Check(side.Visibility==Visibility.Collapsed&&context.Visibility==Visibility.Collapsed,"Sidebar writing hides both permanent rails");ApplyResponsiveLayout(960);Check(side.Visibility==Visibility.Collapsed && workspace.ColumnDefinitions[1].Width.Value>0,"Half-width writing retains notes and releases notebook column");ApplyResponsiveLayout(1608);
+            ApplyResponsiveLayout(400);Check(side.Visibility==Visibility.Collapsed&&context.Visibility==Visibility.Collapsed,"Sidebar writing hides both permanent rails");ApplyResponsiveLayout(960);Check(side.Visibility==Visibility.Collapsed && workspace.ColumnDefinitions[1].Width.Value==0,"Half-width writing keeps organisation summoned");ApplyResponsiveLayout(1608);
             hideNavigation=true;ApplyResponsiveLayout(1608);Check(side.Visibility==Visibility.Collapsed && workspace.Children[1].Visibility==Visibility.Collapsed,"Desktop navigation can give way to the document");hideNavigation=false;ApplyResponsiveLayout(1608);
             var sampleNotes = all.ToList();
             foreach (var note in sampleNotes) { Select(note); await Task.Delay(35); Check(canvas.ContainerCount == 1 && current?.Path == note.Path, "Open note: " + note.Name); }
@@ -29,9 +31,11 @@ public sealed partial class MainWindow
             File.WriteAllText(path, original); current = null; LoadVault(); var fixture = all.Single(n => n.Path == path); NavigateTo(fixture);
             Check(canvas.Markdown == original, "Opening a formatted note preserves its Markdown");
             Check(!detailsOpen && context.Visibility == Visibility.Collapsed, "Note details do not compete with writing by default");
-            Check(workspace.ColumnDefinitions[0].Width.Value>0 && workspace.ColumnDefinitions[1].Width.Value>0,"Desktop separates notebooks and note list into independent columns");
+            Check(workspace.ColumnDefinitions[0].Width.Value==0 && workspace.ColumnDefinitions[1].Width.Value==0,"Write has no permanent navigation columns");
+            ShowExplore();Check(overlayView?.Visibility==Visibility.Visible && workspace.Visibility==Visibility.Collapsed,"Explore summons the library without a permanent sidebar");ShowWriting();Check(overlayView?.Visibility==Visibility.Collapsed,"Returning to Write dismisses Explore");
             Check(canvas.PageMode, "Writing opens as a flowing book page");
             Check(topView == "write", "The write navigation state is selected");
+            touchControls=false;RevealCommands(writingTools!,false);await Task.Delay(340);Check(writingTools!.Opacity<.2,"Writing commands rest as a faint hint");RevealCommands(writingTools,true);await Task.Delay(200);Check(writingTools.Opacity>.9,"Approach reveal animates writing commands to full visibility");RevealCommands(writingTools,false);
             Check(canvas.SourceMatchesModel, "Multiline source controls preserve complete Markdown blocks");
             canvas.FocusEditor(); var flowBefore = draft; canvas.SplitParagraph(); Check(draft == flowBefore + "\n\n", "Enter continues into a new paragraph"); canvas.MergeParagraph(); Check(draft == flowBefore, "Backspace merge preserves paragraph content");
             var metadataProbe = NoteMeta.Set(original, "tags", new[] { "design", "internet" }); metadataProbe = NoteMeta.Set(metadataProbe, "source_links", new[] { new NoteMeta.Source("Reference", "https://example.com") }); Check(NoteMeta.Tags(metadataProbe).Count == 2 && NoteMeta.Sources(metadataProbe).Count == 1 && NoteMeta.Body(metadataProbe) == original, "Tags and sources preserve the Markdown body");

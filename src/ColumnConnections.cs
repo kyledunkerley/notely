@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace Acrux;
 public sealed partial class MainWindow
 {
-    void ShowConnections(bool graph=true)
+    void ShowColumnConnections(bool graph=true)
     {
         if(!TrySave())return;var board=ActivityColumns("connect",new[]{"find notes","connections","selected note"},new[]{.8,2.2,1.0});var find=board.Columns[0];var map=board.Columns[1];var details=board.Columns[2];
         var query=new TextBox{PlaceholderText="Search notes"};find.Children.Add(query);var local=new CheckBox{Content="Selected note's neighbourhood"};find.Children.Add(local);var results=new StackPanel{Spacing=4};find.Children.Add(results);

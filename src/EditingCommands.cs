@@ -27,22 +27,15 @@ public sealed partial class MainWindow
     void ApplyResponsiveLayout(double width)
     {
         if (workspace.ColumnDefinitions.Count < 4) return;
-        AdaptModernHeader(width);
-        bool nav = !focus && (width<900 || !hideNavigation) && (width >= 1280 || compactNav);
-        bool list = !focus && (width<900 || !hideNavigation) && (width >= 900 || compactNav);
-        side.Visibility = nav ? Visibility.Visible : Visibility.Collapsed;
-        workspace.Children[1].Visibility = list ? Visibility.Visible : Visibility.Collapsed;
-        context.Visibility = !focus && detailsOpen && width >= 1500 ? Visibility.Visible : Visibility.Collapsed;
-        workspace.ColumnDefinitions[0].Width = new GridLength(nav ? width < 640 ? 180 : 220 : 0);
-        workspace.ColumnDefinitions[1].Width = new GridLength(list ? width < 640 ? Math.Max(180,width-180) : 260 : 0);
-        workspace.ColumnDefinitions[3].Width = new GridLength(context.Visibility == Visibility.Visible ? 280 : 0);
-        bookColumns.Visibility = width < 900 && list ? Visibility.Collapsed : Visibility.Visible;
+        AdaptFocusHeader(width);
+        side.Visibility=Visibility.Collapsed;workspace.Children[1].Visibility=Visibility.Collapsed;context.Visibility=Visibility.Collapsed;
+        workspace.ColumnDefinitions[0].Width=new GridLength(0);workspace.ColumnDefinitions[1].Width=new GridLength(0);workspace.ColumnDefinitions[3].Width=new GridLength(0);bookColumns.Visibility=Visibility.Visible;
 
     }
     void AddAppShortcuts()
     {
         void Key(VirtualKey key, VirtualKeyModifiers mods, Action action) { var a = new KeyboardAccelerator { Key = key, Modifiers = mods }; a.Invoked += (_, e) => { action(); e.Handled = true; }; root.KeyboardAccelerators.Add(a); }
-        Key(VirtualKey.P, VirtualKeyModifiers.Control, async () => await ShowCommandPalette()); Key(VirtualKey.O, VirtualKeyModifiers.Control, async () => await ShowQuickSwitcher()); Key(VirtualKey.S, VirtualKeyModifiers.Control, () => Save().GetAwaiter().GetResult()); Key(VirtualKey.F11, VirtualKeyModifiers.None, ToggleFocus); Key(VirtualKey.E, VirtualKeyModifiers.Control, canvas.ToggleSource);
+        Key(VirtualKey.P, VirtualKeyModifiers.Control, async () => await ShowCommandPalette()); Key(VirtualKey.O, VirtualKeyModifiers.Control, ShowExplore); Key(VirtualKey.S, VirtualKeyModifiers.Control, () => Save().GetAwaiter().GetResult()); Key(VirtualKey.F11, VirtualKeyModifiers.None, ToggleFocus); Key(VirtualKey.E, VirtualKeyModifiers.Control, canvas.ToggleSource);
     }
     private record Command(string Name, string Hint, Action Run);
     async Task ShowCommandPalette()

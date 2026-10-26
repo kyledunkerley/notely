@@ -59,8 +59,8 @@ public sealed partial class MainWindow : Window
         root.RowDefinitions.Add(new RowDefinition());
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         Content = root;
-        BuildHeader(); BuildWorkspace(); BuildStatus();
-        Seed(); if (smokeMode) notebooks.Add(vault); else { LoadCatalog(); RegisterNotebook(vault); SeedConceptNotebooks(); } SetConceptTheme(smokeMode ? "Dawn" : SavedConceptTheme()); LoadVault(); if (smokeMode) ShowNotebooks(); else ShowWriting();
+        BuildHeader(); BuildWorkspace(); BuildStatus(); WireProximityControls();
+        Seed(); if (smokeMode) notebooks.Add(vault); else { LoadCatalog(); RegisterNotebook(vault); SeedConceptNotebooks(); } SetConceptTheme(smokeMode ? "Dawn" : SavedConceptTheme()); LoadVault(); ShowNotebooks();
         search.TextChanged += (_, _) => { if (!loading) RefreshNotes(); };
         notes.SelectionChanged += (_, _) => { if (notes.SelectedItem is ListViewItem i && i.Tag is Note n) Select(n); };
         canvas.RequestLink += async () => await ShowLinkDialog(); canvas.OpenNote += OpenLinkedNote; canvas.MarkdownChanged += markdown => { draft = markdown; ScheduleSave(); }; canvas.Notice += message => status.Text = message;
@@ -74,8 +74,8 @@ public sealed partial class MainWindow : Window
         var newKey = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.N, Modifiers = Windows.System.VirtualKeyModifiers.Control }; newKey.Invoked += async (_, e) => { await NewNote(); e.Handled = true; }; root.KeyboardAccelerators.Add(newKey);
         var findKey = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.F, Modifiers = Windows.System.VirtualKeyModifiers.Control }; findKey.Invoked += async (_, e) => { e.Handled = true; await FindInNote(); }; root.KeyboardAccelerators.Add(findKey);
     }
-    void BuildHeader() => BuildModernHeader();
-    void BuildWorkspace() => BuildModernWorkspace();
+    void BuildHeader() => BuildFocusHeader();
+    void BuildWorkspace() => BuildFocusWorkspace();
     void BuildStatus() => BuildModernFooter();
     Button Pivot(string text, Action action, Border indicator) => ConceptPivot(text, action, indicator);
     Button NavAction(string text, Action action) { var button = Action(text, action); button.FontSize = 17; button.HorizontalContentAlignment = HorizontalAlignment.Left; return button; }

@@ -1,11 +1,9 @@
-# Validation: Metro column build
+# Validation: Focus surfaces
 
-Native Windows ARM64 build: zero errors and warnings. The prior full editor/storage/capture suite remains in place, extended to verify separate notebook/note columns and half-width navigation behaviour. Exact results are included in previews/smoke-test-results.json.
+Native ARM64 build targets .NET 10 / WinUI 3. Final status is recorded in artifacts/MetroFocus/smoke-test-results.json. The regression suite includes document-wide native selection, capture storage/collision protection, no permanent navigation at desktop and narrow widths, summoned Explore, dismissal back to Write, Markdown preservation, undo/redo, sidecars, rename and external-change protection.
 
-Actual WinUI visual-tree renders cover writing, capture, notebook tiles, Connect, Review, 960px writing and 400px writing. Desktop writing and all four activities plus both narrow writing layouts were visually inspected. Independent activity columns and default-hidden note details replace the earlier shared rail composition.
+Native visual-tree exports cover Write, Capture, Connect, Review, notebook overview and 960/400px writing. Write/Capture use one continuous app background without note dividers or panel fills. Destination headings are lowercase and moderately scaled in response to the user's final correction. No underlines remain.
 
-This is not exhaustive manual accessibility, IME, keyboard or multi-monitor testing. x64 is configured but not built here. Existing editor limits remain: Markdown markers stay visible, live styling covers only a subset, advanced inline embeds/tables are not rendered, and reconstructing an editor for source/layout changes resets its local history. No cloud collaboration, browser extension, inbound Windows share target or radial pen menu is claimed.
+The editor still exposes Markdown syntax and a limited styling subset; no complete Obsidian live-preview parity is claimed. Manual keyboard, IME, accessibility, multi-monitor and long-document performance checks remain necessary. x64 is configured but not validated on this ARM64 machine. Runtime artifacts are excluded from Git.
 
-Automated fixtures use isolated sample data, not user notebooks. Screenshots included here are native visual-tree exports rather than generated concept images.
-
-Final isolated run: 53 checks passed. Final ARM64 build: 0 warnings, 0 errors.
+Home/proximity update: 59 isolated checks passed, including startup notebook tiles, approach geometry, and actual native toolbar fade/reveal states. Build: zero warnings and errors.
