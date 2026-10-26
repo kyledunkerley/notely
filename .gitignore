@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+.transfer/
+references/
+
+artifacts/
+*.zip
+*.acrux-writing
+.codex/
+.agents/
+.vs/
+*.user
+*.suo
+*.acrux-review
